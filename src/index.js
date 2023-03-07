@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, protocol } = require("electron");
 const path = require("path");
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -13,6 +13,7 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      allowRunningInsecureContent: true,
     },
   });
 
@@ -49,7 +50,13 @@ const createWindow = () => {
       );
     }
 
-    const filename = uuidv4() + ".png";
+    const filename = path.join(
+      process.env.HOME,
+      "Library",
+      "Application Support",
+      "leucas_task",
+      uuidv4() + ".png"
+    );
     const out = fs.createWriteStream(filename);
     const stream = canvas.createPNGStream();
 
@@ -80,7 +87,7 @@ const createWindow = () => {
   });
 
   // and load the index.html of the app.
-  mainWindow.loadURL("https://task.leucas.io");
+  mainWindow.loadURL("http://192.168.2.102:7081");
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
